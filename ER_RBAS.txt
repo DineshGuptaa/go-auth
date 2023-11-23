@@ -1,0 +1,47 @@
++------------+       +-------------------+       +------------------+
+|   Users    |       |       Roles       |       |  Permissions     |
++------------+       +-------------------+       +------------------+
+| UserID (PK)|----|<--| RoleID (PK)      |       | PermissionID (PK)|
+| Username   |       | RoleName          |       | PermissionName   |
+| PasswordHash|       +-------------------+       +-----------------+
++------------+            |                  		|
+                          |                  		|
+                          v                  		v
+                    +--------------+   +------------------+
+                    | User_Roles   |   | Role_Permissions |
+                    +--------------+   +------------------+
+                    | UserID (FK)  |   | RoleID (FK)      |
+                    | RoleID (FK)  |   | PermissionID (FK)|
+                    +--------------+   +------------------+
+
+                       |                 |
+                       v                 v
+
+                   +--------------+   +--------------+
+                   |   Groups     |   |  Group_Roles |
+                   +--------------+   +--------------+
+                   | GroupID (PK) |   | GroupID (FK) |
+                   | GroupName    |   | RoleID (FK)  |
+                   +--------------+   +--------------+
+
+                       |                 |
+                       v                 v
+
+                   +--------------+   +-------------+
+                   | User_Groups  |   | User_Roles  |
+                   +--------------+   +-------------+
+                   | UserID (FK)  |   | UserID (FK) |
+                   | GroupID (FK) |   | RoleID (FK) |
+                   +--------------+   +-------------+
+
+In this representation:
+
+Entities are shown as rectangles.
+Primary keys are underlined.
+Relationships are depicted using lines connecting related entities, and cardinality indicators indicate the nature of the relationships (e.g., "1" for one-to-one, "M" for many).
+This diagram represents the relationships between the Users, Roles, Permissions, Groups, and their associated junction tables. The relationships illustrate how users are associated with roles and groups, roles are associated with permissions, and groups are associated with roles. Adjustments can be made based on your specific requirements and constraints.
+
+
+
+
+

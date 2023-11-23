@@ -1,0 +1,121 @@
+Database Tables:
+
+Roles Table:
+1. storing information about different roles in the system.
+
+    CREATE TABLE Roles (
+        RoleID INT PRIMARY KEY,
+        RoleName VARCHAR(50) UNIQUE NOT NULL
+    );
+2. Permissions Table:
+    storing information about different permissions that can be associated with roles.
+    CREATE TABLE Permissions (
+        PermissionID INT PRIMARY KEY,
+        PermissionName VARCHAR(50) UNIQUE NOT NULL
+    );
+
+3. Role_Permissions Table:
+    establishing a many-to-many relationship between roles and permissions.
+
+    CREATE TABLE Role_Permissions (
+        RoleID INT,
+        PermissionID INT,
+        PRIMARY KEY (RoleID, PermissionID),
+        FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
+        FOREIGN KEY (PermissionID) REFERENCES Permissions(PermissionID)
+    );
+4. Groups Table:
+
+    This table stores information about different groups.
+    CREATE TABLE Groups (
+        GroupID INT PRIMARY KEY,
+        GroupName VARCHAR(50) UNIQUE NOT NULL
+    );
+5. Group_Roles Table:
+
+    This table establishes a many-to-many relationship between groups and roles.
+    CREATE TABLE Group_Roles (
+        GroupID INT,
+        RoleID INT,
+        PRIMARY KEY (GroupID, RoleID),
+        FOREIGN KEY (GroupID) REFERENCES Groups(GroupID),
+        FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+    );
+6. Users Table:
+
+    Same as before, storing information about individual users.
+    CREATE TABLE Users (
+        UserID INT PRIMARY KEY,
+        UserName VARCHAR(50) UNIQUE NOT NULL,
+        PasswordHash VARCHAR(100) NOT NULL -- Note: Always store hashed passwords
+        -- Other user-related fields...
+    );
+
+7. User_Roles Table:
+
+    Same as before, establishing a many-to-many relationship between users and roles.
+    CREATE TABLE User_Roles (
+        UserID INT,
+        RoleID INT,
+        PRIMARY KEY (UserID, RoleID),
+        FOREIGN KEY (UserID) REFERENCES Users(UserID),
+        FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+    );
+
+8. User_Groups Table:
+
+    This table establishes a many-to-many relationship between users and groups.
+    CREATE TABLE User_Groups (
+        UserID INT,
+        GroupID INT,
+        PRIMARY KEY (UserID, GroupID),
+        FOREIGN KEY (UserID) REFERENCES Users(UserID),
+        FOREIGN KEY (GroupID) REFERENCES Groups(GroupID)
+    );
+
+Sample Data:
+
+    -- 1. Insert roles
+    INSERT INTO Roles (RoleID, RoleName) VALUES (1, 'Doctor');
+    INSERT INTO Roles (RoleID, RoleName) VALUES (2, 'Nurse');
+    INSERT INTO Roles (RoleID, RoleName) VALUES (3, 'Administrator');
+
+    -- 2. Insert permissions
+    INSERT INTO Permissions (PermissionID, PermissionName) VALUES (1, 'ViewPatientRecords');
+    INSERT INTO Permissions (PermissionID, PermissionName) VALUES (2, 'PrescribeMedication');
+    INSERT INTO Permissions (PermissionID, PermissionName) VALUES (3, 'ManageSystemSettings');
+
+    -- 3. Associate permissions with roles
+    INSERT INTO Role_Permissions (RoleID, PermissionID) VALUES (1, 1); -- Doctor can view patient records
+    INSERT INTO Role_Permissions (RoleID, PermissionID) VALUES (1, 2); -- Doctor can prescribe medication
+    INSERT INTO Role_Permissions (RoleID, PermissionID) VALUES (3, 3); -- Administrator can manage system settings
+
+
+    -- 4. Insert groups
+    INSERT INTO Groups (GroupID, GroupName) VALUES (1, 'MedicalStaff');
+    INSERT INTO Groups (GroupID, GroupName) VALUES (2, 'Administrators');
+
+    -- 5. Associate groups with roles
+    INSERT INTO Group_Roles (GroupID, RoleID) VALUES (1, 1); -- MedicalStaff group has Doctor role
+    INSERT INTO Group_Roles (GroupID, RoleID) VALUES (1, 2); -- MedicalStaff group has Nurse role
+    INSERT INTO Group_Roles (GroupID, RoleID) VALUES (2, 3); -- Administrators group has Administrator role
+
+
+    -- 6. Insert users
+    INSERT INTO Users (UserID, UserName, PasswordHash) VALUES (1, 'DrSmith', 'hashed_password_here');
+    INSERT INTO Users (UserID, UserName, PasswordHash) VALUES (2, 'NurseJones', 'hashed_password_here');
+    INSERT INTO Users (UserID, UserName, PasswordHash) VALUES (3, 'AdminUser', 'hashed_password_here');
+
+
+    -- 7.  Associate users with roles
+    INSERT INTO User_Roles (UserID, RoleID) VALUES (1, 1); -- DrSmith is a Doctor
+    INSERT INTO User_Roles (UserID, RoleID) VALUES (2, 2); -- NurseJones is a Nurse
+    INSERT INTO User_Roles (UserID, RoleID) VALUES (3, 3); -- AdminUser is an Administrator
+
+    -- 8. Associate users with groups
+    INSERT INTO User_Groups (UserID, GroupID) VALUES (1, 1); -- DrSmith belongs to MedicalStaff group
+    INSERT INTO User_Groups (UserID, GroupID) VALUES (2, 1); -- NurseJones belongs to MedicalStaff group
+    INSERT INTO User_Groups (UserID, GroupID) VALUES (3, 2); -- AdminUser belongs to Administrators group
+    --In this extended example, a user can belong to one or more groups, and each group can have its set of roles. 
+    --This allows you to manage permissions at the group level in addition to the individual user level. Adjust 
+    --the schema based on your specific requirements and the complexity of your application
